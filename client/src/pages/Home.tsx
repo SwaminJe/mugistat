@@ -1,28 +1,30 @@
 import Stack from "@mui/material/Stack";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { fetchPlayerProfile, fetchPlayerStats } from "../modules/faceit";
+import HomeSkeleton from "./skeletons/HomeSkeleton";
 import "./styles/home.css";
 
 const Home = () => {
-  const getPlayerProfile = async (name: string) => {
-    const response = await fetch(`https://open.faceit.com/data/v4/players?nickname=${name}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + import.meta.env.VITE_FACEIT_API_KEY,
-      },
-    });
-    const playerProfile = await response.json();
-    console.log(playerProfile);
-    return playerProfile;
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getPlayerProfile("SwaminG");
-  });
+    const getPlayerStats = async () => {
+      const playerProfile = await fetchPlayerProfile("SwaminG");
+      if (!playerProfile) return;
+      const playerStats = await fetchPlayerStats(playerProfile.player_id, "cs2");
+      console.log(playerProfile);
+      console.log(playerStats);
+      // setTimeout(() => {
+      //   setIsLoading(false);
+      // }, 1000);
+    };
+
+    getPlayerStats();
+  }, []);
 
   return (
     <Stack id="home-wrapper">
-      <Stack id="home"></Stack>
+      <Stack id="home">{isLoading ? <HomeSkeleton /> : <Stack></Stack>}</Stack>
     </Stack>
   );
 };
