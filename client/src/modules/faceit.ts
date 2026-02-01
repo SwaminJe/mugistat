@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
-import type { UserInfo } from "../user/user";
+import type { Game } from "../types/games";
+import type { UserInfo } from "../types/user";
 
 const faceItFetcher = async (
   method: "GET",
@@ -25,7 +26,9 @@ const faceItFetcher = async (
   }
 };
 
-export const fetchPlayerProfile = async (playerNickname: string): Promise<UserInfo | undefined> => {
+export const fetchPlayerProfile = async (
+  playerNickname: string,
+): Promise<UserInfo | undefined> => {
   const response = await faceItFetcher(
     "GET",
     `players`,
@@ -35,7 +38,7 @@ export const fetchPlayerProfile = async (playerNickname: string): Promise<UserIn
 
   const result: UserInfo = await response.json();
 
-  return result
+  return result;
 };
 
 export const fetchPlayerStats = async (playerId: string, game: string) => {
@@ -45,6 +48,14 @@ export const fetchPlayerStats = async (playerId: string, game: string) => {
   );
 
   if (!response) return;
+
+  return await response.json();
+};
+
+export const fetchGame = async (game: string): Promise<Game | null> => {
+  const response = await faceItFetcher("GET", `games/${game}`);
+
+  if (!response) return null;
 
   return await response.json();
 };

@@ -2,17 +2,34 @@ import Avatar from "@mui/material/Avatar";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { IT } from 'country-flag-icons/react/3x2';
+import { IT } from "country-flag-icons/react/3x2";
+import { useEffect, useState } from "react";
 import EloDotBar from "../components/EloDotBar";
-import type { UserInfo } from "../user/user";
+import GameCoverCard from "../components/GameCoverCard";
+import { fetchGame } from "../modules/faceit";
+import type { Game } from "../types/games";
+import type { UserInfo } from "../types/user";
 import { levelColorIndicator } from "../utils/utils";
-import './styles/utils.css';
+import "./styles/utils.css";
 
 interface CardProps {
   user: UserInfo;
 }
 
 const Card = ({ user }: CardProps) => {
+  const [games, setGames] = useState<Game[]>([]);
+
+  useEffect(() => {
+    const loadGames = async () => {
+      const gamePromises = ["cs2", "csgo"].map(value => fetchGame(value));
+      const gameResults = await Promise.all(gamePromises);
+      const validGames = gameResults.filter((game): game is Game => game !== null);
+      setGames(validGames);
+    };
+
+    loadGames();
+  }, []);
+
   return (
     <Stack display="flex" width="100%" height="100%" direction="row" gap={2}>
       {/* Left Side */}
@@ -94,19 +111,18 @@ const Card = ({ user }: CardProps) => {
                 </Typography>
                 <IT title="Italy" className="flag" />
               </Stack>
-              <Skeleton variant="text" sx={{ fontSize: "1.5rem" }} />
             </Stack>
             <Stack
               direction="row"
-              gap={2}
+              justifyContent="space-evenly"
               width={"100%"}
-              mt={2}
               fontFamily={"Jersey"}
             >
+              {games[0] && <GameCoverCard size={80} cover={games[0].assets.cover} />}
               <Skeleton variant="rounded" width={80} height={80} />
+              {/* <Skeleton variant="rounded" width={80} height={80} />
               <Skeleton variant="rounded" width={80} height={80} />
-              <Skeleton variant="rounded" width={80} height={80} />
-              <Skeleton variant="rounded" width={80} height={80} />
+              <Skeleton variant="rounded" width={80} height={80} /> */}
             </Stack>
           </Stack>
         </Stack>

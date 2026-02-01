@@ -1,4 +1,4 @@
-interface Game {
+interface UserGameInfo {
     faceit_elo: number;
     region: string;
     game_player_id: string;
@@ -16,7 +16,7 @@ export interface UserInfo {
     faceit_url: string;
     friends_ids: string[];
     verified: boolean;
-    games: { cs2: Game }
+    games: { cs2: UserGameInfo }
 }
 
 

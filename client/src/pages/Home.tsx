@@ -1,7 +1,7 @@
 import Stack from "@mui/material/Stack";
 import { useEffect, useState } from "react";
 import { fetchPlayerProfile } from "../modules/faceit";
-import type { UserInfo } from "../user/user";
+import type { UserInfo } from "../types/user";
 import Card from "./Card";
 import HomeSkeleton from "./skeletons/HomeSkeleton";
 import "./styles/home.css";
