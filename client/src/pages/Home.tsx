@@ -1,22 +1,29 @@
 import Stack from "@mui/material/Stack";
 import { useEffect, useState } from "react";
-import { fetchPlayerProfile, fetchPlayerStats } from "../modules/faceit";
+import { fetchPlayerProfile } from "../modules/faceit";
+import type { UserInfo } from "../user/user";
+import Card from "./Card";
 import HomeSkeleton from "./skeletons/HomeSkeleton";
 import "./styles/home.css";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<UserInfo>({} as UserInfo);
 
   useEffect(() => {
     const getPlayerStats = async () => {
       const playerProfile = await fetchPlayerProfile("SwaminG");
       if (!playerProfile) return;
-      const playerStats = await fetchPlayerStats(playerProfile.player_id, "cs2");
+      setUser(playerProfile);
+      // const playerStats = await fetchPlayerStats(
+      //   playerProfile.player_id,
+      //   "cs2",
+      // );
       console.log(playerProfile);
-      console.log(playerStats);
-      // setTimeout(() => {
-      //   setIsLoading(false);
-      // }, 1000);
+      // console.log(playerStats);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     };
 
     getPlayerStats();
@@ -24,7 +31,15 @@ const Home = () => {
 
   return (
     <Stack id="home-wrapper">
-      <Stack id="home">{isLoading ? <HomeSkeleton /> : <Stack></Stack>}</Stack>
+      <Stack id="home">
+        {isLoading ? (
+          <HomeSkeleton />
+        ) : (
+          <Stack>
+            <Card user={user} />
+          </Stack>
+        )}
+      </Stack>
     </Stack>
   );
 };
